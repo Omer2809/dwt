@@ -10,6 +10,7 @@ import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
+import Home from "../components/home";
 
 function ListingsScreen({ navigation }) {
   const getListingsApi = useApi(listingsApi.getListings);
@@ -36,6 +37,7 @@ function ListingsScreen({ navigation }) {
             <Button title="Retry" onPress={getListingsApi.request} />
           </>
         )}
+        <Home listings={getListingsApi.data} navigation={navigation}/>
         <FlatList
           data={getListingsApi.data}
           keyExtractor={(listing) => listing._id.toString()}
@@ -62,7 +64,7 @@ function ListingsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 5,
+    // padding: 5,
     backgroundColor: colors.light,
   },
 });

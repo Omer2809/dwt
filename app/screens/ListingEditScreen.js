@@ -48,7 +48,13 @@ function ListingEditScreen({ route, navigation }) {
 
   useEffect(() => {
     getCategoriesApi.request();
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      // setRefreshing(true);
+      setInitialImages(prevListing.images);
+    });
+
+    return unsubscribe;
+  }, [route,navigation]);
 
   const handleSubmit = async (listing, { resetForm }) => {
     if (listing.images.length === 0 && initialImages.length === 0)
@@ -108,7 +114,6 @@ function ListingEditScreen({ route, navigation }) {
               images={initialImages}
               onRemoveImage={handleRemoveImage}
             />
-
             <FormImagePicker name="images" count={initialImages.length} />
           </View>
           <FormField maxLength={255} name="title" placeholder="Title" />
