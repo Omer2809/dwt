@@ -28,7 +28,7 @@ function ListingDetailsScreen({ route, navigation }) {
     <KeyboardAvoidingView
       behavior="position"
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-      style={{ flex:1,backgroundColor: "red" }}
+      // style={{ flex:1,backgroundColor: "red" }}
     >
       <View style={{ height:"100%"}}>
         {/* <ScrollView style={{ height:"100%",color:"#333",backgroundColor:"orange" }}> */}
@@ -55,8 +55,8 @@ function ListingDetailsScreen({ route, navigation }) {
           </Text>
           <View style={styles.userContainer}>
             <ListItem
-              image={require("../assets/mosh.jpg")}
-              title="Mosh Hamedani"
+              image={require("../assets/background.jpg")}
+              title="Mohd Omer"
               subTitle="5 Listings"
             />
           </View>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     padding: 20,
     height: "100%",
     flex: 1,
-    backgroundColor: "yellow",
+    // backgroundColor: "yellow",
   },
   image: {
     width: "100%",

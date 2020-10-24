@@ -10,7 +10,7 @@ import ViewImageScreen from "../screens/ViewImageScreen";
 const Stack = createStackNavigator();
 
 const AccountNavigator = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ headerShown: true }}>
     <Stack.Screen name="Account" component={AccountScreen} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="MyListings" component={MyListingsScreen} />

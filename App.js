@@ -9,7 +9,8 @@ import AuthNavigator from "./app/navigation/AuthNavigator";
 import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
 import { navigationRef } from "./app/navigation/rootNavigation";
-import Home from "./app/components/home";
+import DrawerNavigator from "./app/navigation/DrawerNavigator";
+// import Home from "./app/components/home";
 // import logger from "./app/utility/logger";
 
 // logger.start();
@@ -33,7 +34,8 @@ export default function App() {
     <AuthContext.Provider value={{ user, setUser }}>
       <OfflineNotice />
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        {user ? <AppNavigator /> : <AuthNavigator />}
+        {/* {user ? <AppNavigator /> : <AuthNavigator />} */}
+        {user ? <DrawerNavigator /> : <AuthNavigator />}
       </NavigationContainer>
     </AuthContext.Provider>
   );

@@ -16,7 +16,7 @@ import ListItemEditAction from "../components/lists/ListItemEditAction";
 import ActivityIndicator from "../components/ActivityIndicator";
 import AppText from "../components/Text";
 
-function MyListingsScreen({ navigation }) {
+function MessagesScreen({ navigation }) {
   const getMyMessagesApi = useApi(myApi.getMyMessages);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -102,4 +102,4 @@ function MyListingsScreen({ navigation }) {
 
 const styles = StyleSheet.create({});
 
-export default MyListingsScreen;
+export default MessagesScreen;
