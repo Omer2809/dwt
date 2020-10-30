@@ -11,11 +11,11 @@ import * as ImagePicker from "expo-image-picker";
 
 import colors from "../config/colors";
 
-function ImageInput({ imageUri, onChangeImage, count }) {
+function ImageInput({ imageUri, onChangeImage, count, styling }) {
   useEffect(() => {
     requestPermission();
   }, []);
-  console.log(imageUri);
+
   const requestPermission = async () => {
     const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (!granted) alert("You need to enable permission to access the library.");
@@ -44,7 +44,7 @@ function ImageInput({ imageUri, onChangeImage, count }) {
 
   return (
     <TouchableWithoutFeedback onPress={handlePress}>
-      <View style={styles.container}>
+      <View style={[styles.container, styling]}>
         {!imageUri && count < 3 && (
           <MaterialCommunityIcons
             color={colors.medium}

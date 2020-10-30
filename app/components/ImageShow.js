@@ -6,15 +6,14 @@ import colors from "../config/colors";
 
 function ImageShow({ images = [],onRemoveImage }) {
   const scrollView = useRef();
-  // const [images, setImages] = useState(preimages);
-
+  
   const handlePress = (url) => {
     Alert.alert("Delete", "Are you sure you want to delete this image?", [
       { text: "Yes", onPress: () => onRemoveImage(url) },
       { text: "No" },
     ]);
-    console.log("press:",url);
   };
+
   return (
     <View>
       <ScrollView

@@ -6,12 +6,16 @@ import FeedNavigator from "./FeedNavigator";
 import ListingEditScreen from "../screens/ListingEditScreen";
 import AccountNavigator from "./AccountNavigator";
 import { DrawerContent } from "../screens/DrawerContent";
+import useAuth from "../auth/useAuth";
 
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {
+  const { user } = useAuth();
   return (
-    <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
+    <Drawer.Navigator
+      drawerContent={(props) => <DrawerContent {...props} user={user} />}
+    >
       <Drawer.Screen name="HomeDrawer" component={AppNavigator} />
       <Drawer.Screen name="Feed" component={FeedNavigator} />
       <Drawer.Screen name="ListingNew" component={ListingEditScreen} />

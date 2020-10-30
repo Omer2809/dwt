@@ -1,29 +1,45 @@
-import React from "react";
-import { View, StyleSheet, ImageBackground,  Image } from "react-native";
+import React, { useEffect } from "react";
 import {
-  useTheme,
-  Avatar,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
+  View,
   Text,
-  TouchableRipple,
-  Switch,
-} from "react-native-paper";
+  StyleSheet,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  Alert,
+} from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-
+import { Image } from "react-native-expo-image-cache";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
 import routes from "../navigation/routes";
 import useAuth from "../auth/useAuth";
-
-// import{ AuthContext } from '../components/context';
+import ImageInput from "../components/ImageInput";
+import { SidebarData } from "../components/SidebarData";
+import ProfileImage from "../components/ProfileImage";
+import useApi from "../hooks/useApi";
+import usersApi from "../api/users";
 
 export function DrawerContent(props) {
-  // const paperTheme = useTheme();
   const { user, logOut } = useAuth();
+  const getUsersApi = useApi(usersApi.getUser);
 
-  // const { signOut, toggleTheme } = React.useContext(AuthContext);
+  useEffect(() => {
+    getUsersApi.request(props.user.userId);
+  }, [getUsersApi.data]);
+
+  const handleRemove = async () => {
+    const result = await usersApi.deleteImage(user.userId);
+    if (!result.ok) {
+      return alert("Could not delete the profile");
+    }
+  };
+
+  const handlePress = () => {
+    Alert.alert("Delete", "Are you sure you want to delete this image?", [
+      { text: "Yes", onPress: () => handleRemove() },
+      { text: "No" },
+    ]);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -33,113 +49,42 @@ export function DrawerContent(props) {
             source={require("../assets/cc.jpg")}
             style={{ width: undefined, padding: 16, paddingTop: 48 }}
           >
-            <Image
-              source={require("../assets/mosh.jpg")}
-              style={styles.profile}
-            />
+            {getUsersApi.data.images && getUsersApi.data.images.length !== 0 ? (
+              <TouchableWithoutFeedback onPress={handlePress}>
+                <View>
+                  <Image
+                    style={styles.profile}
+                    tint="light"
+                    preview={{ uri: getUsersApi.data.images[0].thumbnailUrl }}
+                    uri={getUsersApi.data.images[0].url}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            ) : (
+              <ProfileImage userId={user.userId} styling={styles.profile} />
+            )}
             <Text style={styles.name}>{user.name}</Text>
-            <Text style={{    color: "#eee"}}>@{user.email}</Text>
+            <Text style={{ color: "#eee" }}>@{user.email}</Text>
           </ImageBackground>
-
-          {/* <View style={styles.userInfoSection}>
-            <View style={{ flexDirection: "row", marginTop: 15 }}>
-              <Avatar.Image
-                source={{
-                  uri: "https://api.adorable.io/avatars/50/abott@adorable.png",
-                }}
-                size={50}
-              />
-              <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                <Title style={styles.title}>John Doe</Title>
-                <Caption style={styles.caption}>@j_doe</Caption>
-              </View>
-            </View>
-
-            <View style={styles.row}>
-              <View style={styles.section}>
-                <Paragraph style={[styles.paragraph, styles.caption]}>
-                  80
-                </Paragraph>
-                <Caption style={styles.caption}>Posts</Caption>
-              </View>
-              <View style={styles.section}>
-                <Paragraph style={[styles.paragraph, styles.caption]}>
-                  100
-                </Paragraph>
-                <Caption style={styles.caption}>Bookmarks</Caption>
-              </View>
-            </View>
-          </View> */}
-
-          <Drawer.Section style={styles.drawerSection}>
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="home-outline" color={color} size={size} />
-              )}
-              label="Home"
-              onPress={() => {
-                props.navigation.navigate(routes.LISTINGS);
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-outline" color={color} size={size} />
-              )}
-              label="Profile"
-              onPress={() => {
-                props.navigation.navigate(routes.LISTINGS);
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
-              )}
-              label="Bookmarks"
-              onPress={() => {
-                props.navigation.navigate("MessageScreen");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="settings-outline" color={color} size={size} />
-              )}
-              label="Messages"
-              onPress={() => {
-                props.navigation.navigate(routes.MESSAGES);
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-check-outline" color={color} size={size} />
-              )}
-              label="Listings"
-              onPress={() => {
-                props.navigation.navigate(routes.MY_LISTINGS);
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-check-outline" color={color} size={size} />
-              )}
-              label="Support"
-              onPress={() => {
-                props.navigation.navigate("MyListingsScreen");
-              }}
-            />
-          </Drawer.Section>
-          {/* <Drawer.Section title="Preferences">
-                        <TouchableRipple onPress={() => {toggleTheme()}}>
-                            <View style={styles.preference}>
-                                <Text>Dark Theme</Text>
-                                <View pointerEvents="none">
-                                    <Switch value={paperTheme.dark}/>
-                                </View>
-                            </View>
-                        </TouchableRipple>
-                    </Drawer.Section> */}
+          <View style={styles.drawerSection}>
+            {SidebarData.map((item, index) => {
+              return (
+                <DrawerItem
+                  key={index}
+                  icon={({ color, size }) => (
+                    <Icon name={item.icon} color={color} size={size} />
+                  )}
+                  label={item.title}
+                  onPress={() => {
+                    props.navigation.navigate(routes[item.path]);
+                  }}
+                />
+              );
+            })}
+          </View>
         </View>
       </DrawerContentScrollView>
-      <Drawer.Section style={styles.bottomDrawerSection}>
+      <View style={styles.bottomDrawerSection}>
         <DrawerItem
           icon={({ color, size }) => (
             <Icon name="exit-to-app" color={color} size={size} />
@@ -147,7 +92,7 @@ export function DrawerContent(props) {
           label="Sign Out"
           onPress={() => logOut()}
         />
-      </Drawer.Section>
+      </View>
     </View>
   );
 }
@@ -158,6 +103,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
+    marginVertical: 0,
     borderColor: "#fff",
   },
   name: {
@@ -169,32 +115,6 @@ const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
   },
-  userInfoSection: {
-    paddingLeft: 20,
-  },
-  title: {
-    fontSize: 16,
-    marginTop: 3,
-    fontWeight: "bold",
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-  },
-  row: {
-    marginTop: 20,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  section: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 15,
-  },
-  paragraph: {
-    fontWeight: "bold",
-    marginRight: 3,
-  },
   drawerSection: {
     marginTop: 15,
   },
@@ -202,11 +122,5 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderTopColor: "#f4f4f4",
     borderTopWidth: 1,
-  },
-  preference: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
   },
 });
