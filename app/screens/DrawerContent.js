@@ -13,7 +13,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import routes from "../navigation/routes";
 import useAuth from "../auth/useAuth";
-import ImageInput from "../components/ImageInput";
+
 import { SidebarData } from "../components/SidebarData";
 import ProfileImage from "../components/ProfileImage";
 import useApi from "../hooks/useApi";
@@ -47,7 +47,7 @@ export function DrawerContent(props) {
         <View style={styles.drawerContent}>
           <ImageBackground
             source={require("../assets/cc.jpg")}
-            style={{ width: undefined, padding: 16, paddingTop: 48 }}
+            style={{ padding: 16, paddingTop: 48 }}
           >
             {getUsersApi.data.images && getUsersApi.data.images.length !== 0 ? (
               <TouchableWithoutFeedback onPress={handlePress}>

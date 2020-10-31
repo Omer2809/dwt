@@ -8,4 +8,5 @@ export default {
   dark: "#0c0c0c",
   danger: "#ff5252",
   edit: "#4ecdc4",
+  profile: "#669966",
 };

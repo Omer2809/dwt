@@ -14,7 +14,7 @@
 //     <View style={styles.container}>
 //       <TouchableWithoutFeedback
 //       // onPress={() => navigation.navigate(routes.LISTING_DETAILS, listing)}
-      
+
 //       onPress={() => navigation.goBack()}
 //         style={styles.closeIcon}
 //       >
@@ -71,15 +71,8 @@
 
 // export default ViewImageScreen;
 
-
-
-
-
-
-
-
 import React from "react";
-import { StyleSheet, View, Dimensions,ScrollView } from "react-native";
+import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "react-native-expo-image-cache";
 
@@ -98,23 +91,19 @@ function ViewImageScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback
-        // onPress={() => navigation.navigate(routes.LISTING_DETAILS, listing)}
-
         onPress={() => navigation.goBack()}
         style={styles.closeIcon}
       >
-        {/* <View > */}
         <MaterialCommunityIcons name="close" color="white" size={35} />
-        {/* </View> */}
       </TouchableWithoutFeedback>
       <View style={styles.deleteIcon}>
-        {/* <MaterialCommunityIcons
-          name="trash-can-outline"
-          color="white"
-          size={35}
-        /> */}
       </View>
-      <ScrollView snapToInterval={width} decelerationRate="fast" disableIntervalMomentum horizontal>
+      <ScrollView
+        snapToInterval={width}
+        decelerationRate="fast"
+        disableIntervalMomentum
+        horizontal
+      >
         {listing.images.map((image) => (
           <View key={image.url} style={styles.picture}>
             <Image
@@ -163,6 +152,7 @@ const styles = StyleSheet.create({
     width,
     height,
     overflow: "hidden",
+    paddingBottom:70
   },
 });
 

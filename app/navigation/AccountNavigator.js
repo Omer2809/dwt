@@ -15,7 +15,7 @@ const AccountNavigator = () => (
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="MyListings" component={MyListingsScreen} />
     <Stack.Screen name="MessageDetails" component={MessageDetailScreen} />
-    <Stack.Screen name="ImageViewMessage" component={ViewImageScreen} />
+    <Stack.Screen name="ImageViewMessage" options={{ headerShown: false }} component={ViewImageScreen} />
   </Stack.Navigator>
 );
 

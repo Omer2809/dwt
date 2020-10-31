@@ -139,7 +139,7 @@ function ListingEditScreen({ route, navigation }) {
             numberOfLines={3}
             placeholder="Description"
           />
-          <SubmitButton title="Post" />
+          <SubmitButton title="Save Post" />
         </Form>
       </KeyboardAvoidingView>
     </Screen>

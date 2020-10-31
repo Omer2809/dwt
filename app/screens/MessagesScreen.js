@@ -70,13 +70,18 @@ function MessagesScreen({ navigation }) {
               keyExtractor={(message) => message._id}
               renderItem={({ item }) => (
                 <ListItem
-                  title={item.toUser && item.toUser.name}
+                  title={item.fromUser && item.fromUser.name}
                   subTitle={item.content}
-                  image={require("../assets/mosh.jpg")}
+                  imageUrl={
+                    item.fromUser.images[0] && item.fromUser.images[0].url
+                  }
+                  thumbnailUrl={
+                    item.fromUser.images[0] &&
+                    item.fromUser.images[0].thumbnailUrl
+                  }
                   onPress={() =>
                     navigation.navigate(routes.MESSAGE_DETAILS, item)
                   }
-                  // thumbnailUrl={item.images[0].thumbnailUrl}
                   renderRightActions={() => (
                     <ListItemDeleteAction onPress={() => handleDelete(item)} />
                   )}
