@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View, Alert } from "react-native";
+import _ from "lodash/array";
 
 import useAuth from "../auth/useAuth";
 import myApi from "../api/my";
@@ -18,10 +19,12 @@ import ActivityIndicator from "../components/ActivityIndicator";
 function MyListingsScreen({ navigation }) {
   // const { user } = useAuth();
   const getMyListingsApi = useApi(myApi.getMyListings);
+  const getListingsApi = useApi(listingsApi.getListings);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     getMyListingsApi.request();
+    getListingsApi.request();
     setRefreshing(false);
     const unsubscribe = navigation.addListener("focus", () => {
       setRefreshing(true);
@@ -44,15 +47,29 @@ function MyListingsScreen({ navigation }) {
     }
   };
 
+  const handlePress = (item) => {
+    Alert.alert("Delete", "Are you sure you want to delete this Listing?", [
+      { text: "Yes", onPress: () => handleDelete(item) },
+      { text: "No" },
+    ]);
+  };
+
   return (
     <>
       <ActivityIndicator visible={getMyListingsApi.loading} />
       <Screen>
         {getMyListingsApi.error && (
-          <>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              height: 200,
+            }}
+          >
             <AppText>Couldn't retrieve your listings.</AppText>
             <Button title="Retry" onPress={getMyListingsApi.request} />
-          </>
+          </View>
         )}
         {getMyListingsApi.data.length === 0 ? (
           <Text style={{ paddingLeft: 20 }}>
@@ -72,11 +89,18 @@ function MyListingsScreen({ navigation }) {
                   subTitle={"Rs." + item.price}
                   imageUrl={item.images[0] && item.images[0].url}
                   onPress={() =>
-                    navigation.navigate(routes.LISTING_DETAILS, item)
+                    navigation.navigate(routes.LISTING_DETAILS, {
+                      listing: item,
+                      data: _.slice(
+                        getListingsApi.data,
+                        0,
+                        Math.min(10, getListingsApi.data.length)
+                      ).reverse(),
+                    })
                   }
                   thumbnailUrl={item.images[0] && item.images[0].thumbnailUrl}
                   renderRightActions={() => (
-                    <ListItemDeleteAction onPress={() => handleDelete(item)} />
+                    <ListItemDeleteAction onPress={() => handlePress(item)} />
                   )}
                   renderLeftActions={() => (
                     <ListItemEditAction

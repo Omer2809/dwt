@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  FlatList,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 import { Image } from "react-native-expo-image-cache";
 import routes from "../navigation/routes";
@@ -9,14 +16,15 @@ import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
 import {
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  
 } from "react-native-gesture-handler";
 import useAuth from "../auth/useAuth";
 import Icon from "../components/Icon";
 
 function ListingDetailsScreen({ route, navigation }) {
   const { user } = useAuth();
-  const listing = route.params;
+  const { listing, data } = route.params;
+  console.log(route.params);
 
   return (
     <KeyboardAvoidingView
@@ -37,10 +45,8 @@ function ListingDetailsScreen({ route, navigation }) {
         <Text style={styles.ImageDescription}>
           <Text style={styles.ImageText}>{listing.title}</Text>
           {`\n`}
-          {/* {listing.description.substring(0, 80)} */}
-          This is a bike ith brilliant speed and best pickup it greaty to This
-          is a bike ith brilliant speed and best pickup it great to take a take
-          a .....
+          {listing.description.substring(0, 180)}
+          ....
         </Text>
       </TouchableOpacity>
       <View style={styles.ImagePrice}>
@@ -70,7 +76,7 @@ function ListingDetailsScreen({ route, navigation }) {
           color="#fff"
         />
       </View>
-      <View style={styles.detailsContainer}>
+      <View style={{ paddingTop: 8 }}>
         <ListItem
           title={listing.added_by.name}
           subTitle={`${listing.added_by.listingCount} Listings`}
@@ -82,33 +88,79 @@ function ListingDetailsScreen({ route, navigation }) {
             listing.added_by.images[0].thumbnailUrl
           }
         />
-        {user.userId !== listing.added_by._id && (
-          <ContactSellerForm listing={listing} btnName="Contact  Seller" />
-        )}
       </View>
+      <View style={{ paddingHorizontal: 20 }}>
+        <ContactSellerForm listing={listing} btnName="Contact  Seller" />
+      </View>
+      {/* {user.userId !== listing.added_by._id ? (
+        <View style={{ paddingHorizontal: 20 }}>
+          <ContactSellerForm listing={listing} btnName="Contact  Seller" />
+        </View>
+      ) : (
+        <View>
+          <View style={{ paddingBottom: 7, paddingLeft: 20 }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              Top Trending
+            </Text>
+          </View>
+          <FlatList
+            horizontal
+            data={data}
+            keyExtractor={(listing) => listing._id.toString()}
+            renderItem={({ item }) => {
+              return (
+                <View style={{ paddingLeft: 16 }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate(routes.LISTING_DETAILS, {
+                        listing: item,
+                        data: data,
+                      })
+                    }
+                  >
+                    <Image
+                      tint="light"
+                      preview={{ uri: item.images[0].thumbnailUrl }}
+                      uri={item.images[0].url}
+                      style={{
+                        width: 130,
+                        marginRight: 5,
+                        height: 190,
+                        borderRadius: 10,
+                      }}
+                    />
+                    <View style={styles.detailImageOverlay} />
+                    <Text style={styles.detailImageText}>{item.title}</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+          />
+        </View>
+      )} */}
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  detailsContainer: {
-    paddingHorizontal: 20,
-    paddingTop:8
+  image: {
+    width: "100%",
+    height: 440,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   ImageOverlay: {
     width: "100%",
-    height: 450,
+    height: 440,
     position: "absolute",
     backgroundColor: "#333",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     opacity: 0.3,
   },
-
   ImageText: {
     position: "absolute",
     color: "#fff",
-    // textTransform: "uppercase",
     fontWeight: "bold",
     fontSize: 22,
   },
@@ -118,8 +170,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: colors.primary,
     // right: 18,
-    right: 122,
-    top: 425,
+    right: 135,
+    top: 419,
     paddingVertical: 10,
     paddingRight: 16,
     paddingLeft: 10,
@@ -129,10 +181,8 @@ const styles = StyleSheet.create({
   ImagePrice: {
     position: "absolute",
     backgroundColor: colors.primary,
-    right: 18,
-    // top: 50,
-    // right: 135,
-    top: 425,
+    right: 30,
+    top: 419,
     zIndex: 50,
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -148,11 +198,22 @@ const styles = StyleSheet.create({
     left: 30,
     bottom: 25,
   },
-  image: {
-    width: "100%",
-    height: 450,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+  detailImageOverlay: {
+    width: 130,
+    height: 190,
+    marginRight: 8,
+    borderRadius: 10,
+    position: "absolute",
+    backgroundColor: "#222",
+    opacity: 0.2,
+  },
+  detailImageText: {
+    position: "absolute",
+    color: "#fff",
+    marginTop: 4,
+    fontSize: 14,
+    left: 10,
+    bottom: 20,
   },
 });
 

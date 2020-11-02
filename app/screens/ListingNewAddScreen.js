@@ -52,14 +52,13 @@ function ListingNewAddScreen({ route, navigation }) {
       (progress) => setProgress(progress)
     );
 
-    resetForm();
-    
-    navigation.navigate(routes.LISTINGS);
-
     if (!result.ok) {
       setUploadVisible(false);
       return alert("Could not save the listing");
     }
+
+    resetForm();
+    navigation.navigate(routes.LISTINGS, { listing });
   };
 
   return (

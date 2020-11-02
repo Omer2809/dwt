@@ -1,9 +1,11 @@
 export default Object.freeze({
   LOGIN: "Login",
   REGISTER: "Register",
+  ACCOUNT: "Account",
   LISTINGS: "Listings",
   LISTING_NEW: "ListingNew",
   LISTING_DETAILS: "ListingDetails",
+  TRENDING_LISTING_DETAILS: "ListingDetails",
   LISTING_EDIT: "ListingEdit",
   MY_LISTINGS:"MyListings",
   MESSAGES: "Messages",

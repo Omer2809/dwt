@@ -12,7 +12,6 @@ import {
 } from "../components/lists";
 import routes from "../navigation/routes";
 import messagesApi from "../api/messages";
-import ListItemEditAction from "../components/lists/ListItemEditAction";
 import ActivityIndicator from "../components/ActivityIndicator";
 import AppText from "../components/Text";
 
@@ -49,10 +48,17 @@ function MessagesScreen({ navigation }) {
       <ActivityIndicator visible={getMyMessagesApi.loading} />
       <Screen>
         {getMyMessagesApi.error && (
-          <>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              height: 200,
+            }}
+          >
             <AppText>Couldn't retrieve the Messages.</AppText>
             <Button title="Retry" onPress={getMyMessagesApi.request} />
-          </>
+          </View>
         )}
         {getMyMessagesApi.data.length === 0 ? (
           <Text style={{ paddingLeft: 20 }}>
@@ -85,13 +91,6 @@ function MessagesScreen({ navigation }) {
                   renderRightActions={() => (
                     <ListItemDeleteAction onPress={() => handleDelete(item)} />
                   )}
-                  renderLeftActions={() => (
-                    <ListItemEditAction
-                      onPress={() =>
-                        navigation.navigate(routes.LISTING_EDIT, item)
-                      }
-                    />
-                  )}
                 />
               )}
               ItemSeparatorComponent={ListItemSeparator}
@@ -104,7 +103,5 @@ function MessagesScreen({ navigation }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({});
 
 export default MessagesScreen;

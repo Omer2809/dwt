@@ -3,16 +3,15 @@ import {
   View,
   StyleSheet,
   Text,
-  // Image,
+  RefreshControl,
   ImageBackground,
   ScrollView,
   TouchableOpacity,
   FlatList,
-  TextInput,
-  TouchableWithoutFeedback,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "react-native-expo-image-cache";
+import _ from "lodash/array";
 
 import ActivityIndicator from "../components/ActivityIndicator";
 import Button from "../components/Button";
@@ -25,9 +24,14 @@ import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import SearchBox from "./searchBox";
 import getSearchData from "./getSearchData";
-// import Home from "../components/home";
+import useAuth from "../auth/useAuth";
 
-function ListingsScreen({ navigation }) {
+function getData(items) {
+  return _.slice(items, 0, Math.min(10, items.length)).reverse();
+}
+
+function ListingsScreen({ route, navigation }) {
+  const { user } = useAuth();
   const getListingsApi = useApi(listingsApi.getListings);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,29 +40,29 @@ function ListingsScreen({ navigation }) {
     getListingsApi.request();
     setRefreshing(false);
     const unsubscribe = navigation.addListener("focus", () => {
-      setRefreshing(true);
+      // console.log("in listings", msg);
     });
-
-    setRefreshing(false);
     return unsubscribe;
-  }, [refreshing]);
+  }, [refreshing, route.params]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    console.log(query);
   };
 
   return (
     <>
       <ActivityIndicator visible={getListingsApi.loading} />
       <Screen style={styles.screen}>
-        {getListingsApi.error && (
-          <>
-            <AppText>Couldn't retrieve the listings.</AppText>
-            <Button title="Retry" onPress={getListingsApi.request} />
-          </>
-        )}
-        <View style={{ flexGrow: 1, height: "100%" }}>
+        {/* <View style={{ flexGrow: 1, height: "100%" }}> */}
+        <ScrollView
+          style={{ flexGrow: 1, height: "100%" }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => setRefreshing(true)}
+            />
+          }
+        >
           <View>
             <ImageBackground
               source={require("../assets/background.jpg")}
@@ -67,7 +71,9 @@ function ListingsScreen({ navigation }) {
             >
               <View style={styles.DarkOverlay}></View>
               <View style={styles.searchContainer}>
-                <Text style={styles.UserGreet}>Hi Omer,</Text>
+                <Text style={styles.UserGreet}>
+                  Hi {user.name.trim().split(" ")[0]}
+                </Text>
                 <Text style={styles.UserText}>
                   What would you like to buy today?
                 </Text>
@@ -103,88 +109,104 @@ function ListingsScreen({ navigation }) {
               />
             </ImageBackground>
           </View>
-          <ScrollView>
-            {!searchQuery && (
-              <>
+          {/* <ScrollView> */}
+          {!searchQuery && (
+            <>
+              {getListingsApi.data && getListingsApi.data.length !== 0 && (
                 <View style={{ paddingVertical: 15, paddingLeft: 20 }}>
                   <Text style={{ fontSize: 22, fontWeight: "bold" }}>
                     Top Trending
                   </Text>
                 </View>
-                <View>
-                  <FlatList
-                    horizontal
-                    data={getListingsApi.data}
-                    keyExtractor={(listing) => listing._id.toString()}
-                    renderItem={({ item }) => {
-                      return (
-                        <View style={{ paddingLeft: 16 }}>
-                          <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate(routes.LISTING_DETAILS, item)
-                            }
-                          >
-                            <Image
-                              tint="light"
-                              preview={{ uri: item.images[0].thumbnailUrl }}
-                              uri={item.images[0].url}
-                              style={{
-                                width: 150,
-                                marginRight: 8,
-                                height: 250,
-                                borderRadius: 10,
-                              }}
-                            />
-                            <View style={styles.ImageOverlay}></View>
-                            <Feather
-                              name="map-pin"
-                              size={16}
-                              color="#fff"
-                              style={styles.imageLocationIcon}
-                            />
-                            <Text style={styles.ImageText}>{item.title}</Text>
-                          </TouchableOpacity>
-                        </View>
-                      );
-                    }}
-                  />
-                </View>
-              </>
+              )}
+              <View>
+                <FlatList
+                  horizontal
+                  data={getData(getListingsApi.data)}
+                  keyExtractor={(listing) => listing._id.toString()}
+                  renderItem={({ item }) => {
+                    return (
+                      <View style={{ paddingLeft: 16 }}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate(routes.LISTING_DETAILS, {
+                              listing: item,
+                              data: getData(getListingsApi.data),
+                            })
+                          }
+                        >
+                          <Image
+                            tint="light"
+                            preview={{ uri: item.images[0].thumbnailUrl }}
+                            uri={item.images[0].url}
+                            style={{
+                              width: 150,
+                              marginRight: 8,
+                              height: 250,
+                              borderRadius: 10,
+                            }}
+                          />
+                          <View style={styles.ImageOverlay}></View>
+                          <Feather
+                            name="map-pin"
+                            size={16}
+                            color="#fff"
+                            style={styles.imageLocationIcon}
+                          />
+                          <Text style={styles.ImageText}>{item.title}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  }}
+                />
+              </View>
+            </>
+          )}
+          <View>
+            <Text style={{ padding: 20, fontSize: 22, fontWeight: "bold" }}>
+              {searchQuery
+                ? getSearchData(searchQuery, getListingsApi.data).length === 0
+                  ? "No Products Found..."
+                  : "Search Result..."
+                : "Top Products"}
+            </Text>
+            {getListingsApi.error && (
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 200,
+                }}
+              >
+                <AppText>Couldn't retrieve the listings.</AppText>
+                <Button title="Retry" onPress={getListingsApi.request} />
+              </View>
             )}
-            <View>
-           
-              <Text style={{ padding: 20, fontSize: 22, fontWeight: "bold" }}>
-                {searchQuery
-                  ? getSearchData(searchQuery, getListingsApi.data).length === 0
-                    ? "No Products Found..."
-                    : "Search Result..."
-                  : "Top Products"}
-              </Text>
-          
-              <FlatList
-                data={getSearchData(searchQuery, getListingsApi.data)}
-                keyExtractor={(listing) => listing._id.toString()}
-                renderItem={({ item }) => (
-                  <Card
-                    title={item.title}
-                    subTitle={"Rs." + item.price}
-                    imageUrl={
-                      item.images[0]
-                        ? item.images[0].url
-                        : "https://res.cloudinary.com/deqjuoahl/image/upload/v1602501994/dev_setups/iwhu97c1fezqwfwf0nfk.png"
-                    }
-                    onPress={() =>
-                      navigation.navigate(routes.LISTING_DETAILS, item)
-                    }
-                    thumbnailUrl={item.images[0] && item.images[0].thumbnailUrl}
-                  />
-                )}
-                refreshing={refreshing}
-                onRefresh={() => setRefreshing(true)}
-              />
-            </View>
-          </ScrollView>
-        </View>
+            <FlatList
+              data={getSearchData(searchQuery, getListingsApi.data)}
+              keyExtractor={(listing) => listing._id.toString()}
+              renderItem={({ item }) => (
+                <Card
+                  title={item.title}
+                  subTitle={"Rs." + item.price}
+                  imageUrl={
+                    item.images[0]
+                      ? item.images[0].url
+                      : "https://res.cloudinary.com/deqjuoahl/image/upload/v1602501994/dev_setups/iwhu97c1fezqwfwf0nfk.png"
+                  }
+                  onPress={() =>
+                    navigation.navigate(routes.LISTING_DETAILS, {
+                      listing: item,
+                      data: getData(getListingsApi.data),
+                    })
+                  }
+                  thumbnailUrl={item.images[0] && item.images[0].thumbnailUrl}
+                />
+              )}
+            />
+          </View>
+        </ScrollView>
       </Screen>
     </>
   );

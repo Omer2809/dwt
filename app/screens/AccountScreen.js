@@ -40,7 +40,9 @@ function AccountScreen({ navigation }) {
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
-        {getUsersApi.data.images && getUsersApi.data.images.length !== 0 ? (
+        {getUsersApi.data &&
+        getUsersApi.data.images &&
+        getUsersApi.data.images.length !== 0 ? (
           <ListItem
             title={user.name}
             subTitle={user.email}
@@ -58,7 +60,7 @@ function AccountScreen({ navigation }) {
                 backgroundColor={colors.profile}
               />
             }
-            // image={require("../assets/mosh.jpg")}
+            
           />
         )}
       </View>

@@ -1,8 +1,12 @@
 {
   "expo": {
-    "name": "dwt",
-    "slug": "dwt",
-    "platforms": ["ios", "android", "web"],
+    "name": "mydwt",
+    "slug": "mydwt",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
@@ -14,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.codewithmosh.donewithit",
@@ -22,8 +28,7 @@
     },
     "android": {
       "package": "com.codewithmosh.donewithit",
-      "versionCode": 1,
-      "useNextNotificationsApi": true
+      "versionCode": 1
     },
     "description": "A marketplace for selling the stuff you don't need anymore.",
     "notification": {

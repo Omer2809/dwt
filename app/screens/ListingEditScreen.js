@@ -54,7 +54,7 @@ function ListingEditScreen({ route, navigation }) {
     });
 
     return unsubscribe;
-  }, [route,navigation]);
+  }, [route, navigation]);
 
   const handleSubmit = async (listing, { resetForm }) => {
     if (listing.images.length === 0 && initialImages.length === 0)
@@ -74,7 +74,8 @@ function ListingEditScreen({ route, navigation }) {
     );
 
     resetForm();
-    navigation.navigate(routes.LISTINGS);
+
+    navigation.navigate(routes.LISTINGS, { listing });
 
     if (!result.ok) {
       setUploadVisible(false);
