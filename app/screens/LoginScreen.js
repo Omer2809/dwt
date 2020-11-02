@@ -11,6 +11,7 @@ import {
 } from "../components/forms";
 import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
+import ActivityIndicator from "../components/ActivityIndicator";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -20,9 +21,13 @@ const validationSchema = Yup.object().shape({
 function LoginScreen(props) {
   const auth = useAuth();
   const [loginFailed, setLoginFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async ({ email, password }) => {
+    setLoading(true);
     const result = await authApi.login(email, password);
+    setLoading(false);
+
     if (!result.ok) return setLoginFailed(true);
     setLoginFailed(false);
     auth.logIn(result.data);
@@ -30,8 +35,8 @@ function LoginScreen(props) {
 
   return (
     <Screen style={styles.container}>
+      <ActivityIndicator visible={loading} />
       <Image style={styles.logo} source={require("../assets/logo-red.png")} />
-
       <Form
         initialValues={{ email: "", password: "" }}
         onSubmit={handleSubmit}

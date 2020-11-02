@@ -5,7 +5,7 @@ import AppNavigator from "./AppNavigator";
 import FeedNavigator from "./FeedNavigator";
 import ListingEditScreen from "../screens/ListingEditScreen";
 import AccountNavigator from "./AccountNavigator";
-import { DrawerContent } from "../screens/DrawerContent";
+import { DrawerContent } from "../components/DrawerContent";
 import useAuth from "../auth/useAuth";
 
 const Drawer = createDrawerNavigator();

@@ -13,7 +13,7 @@ function UploadScreen({ onDone, progress = 0, visible = false }) {
           <Progress.Bar
             color={colors.primary}
             progress={progress}
-            width={200}
+            width={300}
           />
         ) : (
           <LottieView
@@ -31,7 +31,7 @@ function UploadScreen({ onDone, progress = 0, visible = false }) {
 
 const styles = StyleSheet.create({
   animation: {
-    width: 150,
+    width: 250,
   },
   container: {
     alignItems: "center",

@@ -1,18 +1,14 @@
 import React from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
-
+import {
+  TouchableOpacity
+} from "react-native-gesture-handler";
 import { Image } from "react-native-expo-image-cache";
+
 import routes from "../navigation/routes";
 import colors from "../config/colors";
 import ContactSellerForm from "../components/ContactSellerForm";
-import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
-import {
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
-import useAuth from "../auth/useAuth";
-import Icon from "../components/Icon";
 
 function MessageDetailsScreen({ route, navigation }) {
   const message = route.params;
@@ -47,32 +43,9 @@ function MessageDetailsScreen({ route, navigation }) {
           Rs.{message.listing.price}
         </Text>
       </View>
-    
       <View style={styles.userContainer}>
-        {/* <Text
-          style={{
-            marginLeft: 12,
-            fontSize: 20,
-            marginTop: 5,
-            fontWeight: "bold",
-          }}
-        >
-          Message From:
-        </Text>
-        <ListItem
-          title={`${message.fromUser.name}`}
-          subTitle={`${message.fromUser.email}`}
-          imageUrl={
-            message.fromUser.images[0] && message.fromUser.images[0].url
-          }
-          thumbnailUrl={
-            message.fromUser.images[0] &&
-            message.fromUser.images[0].thumbnailUrl
-          }
-        /> */}
         <Text
           style={{
-            
             fontSize: 20,
             marginVertical: 10,
             fontWeight: "bold",
@@ -80,9 +53,7 @@ function MessageDetailsScreen({ route, navigation }) {
         >
           Message from {message.fromUser.name}:
         </Text>
-        <Text>
-          " {`${message.content.substring(0, 150)}`} ..."
-        </Text>
+        <Text>" {`${message.content.substring(0, 150)}`} ..."</Text>
         <ContactSellerForm listing={message.listing} btnName="Send Reply" />
       </View>
     </KeyboardAvoidingView>

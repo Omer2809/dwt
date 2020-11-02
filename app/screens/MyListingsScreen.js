@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FlatList, StyleSheet, View, Alert } from "react-native";
 import _ from "lodash/array";
 
-import useAuth from "../auth/useAuth";
 import myApi from "../api/my";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
@@ -17,7 +16,6 @@ import ListItemEditAction from "../components/lists/ListItemEditAction";
 import ActivityIndicator from "../components/ActivityIndicator";
 
 function MyListingsScreen({ navigation }) {
-  // const { user } = useAuth();
   const getMyListingsApi = useApi(myApi.getMyListings);
   const getListingsApi = useApi(listingsApi.getListings);
   const [refreshing, setRefreshing] = useState(false);

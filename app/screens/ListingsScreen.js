@@ -22,8 +22,8 @@ import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
-import SearchBox from "./searchBox";
-import getSearchData from "./getSearchData";
+import SearchBox from "../components/searchBox";
+import getSearchData from "../components/getSearchData";
 import useAuth from "../auth/useAuth";
 
 function getData(items) {
@@ -40,7 +40,6 @@ function ListingsScreen({ route, navigation }) {
     getListingsApi.request();
     setRefreshing(false);
     const unsubscribe = navigation.addListener("focus", () => {
-      // console.log("in listings", msg);
     });
     return unsubscribe;
   }, [refreshing, route.params]);
@@ -53,7 +52,6 @@ function ListingsScreen({ route, navigation }) {
     <>
       <ActivityIndicator visible={getListingsApi.loading} />
       <Screen style={styles.screen}>
-        {/* <View style={{ flexGrow: 1, height: "100%" }}> */}
         <ScrollView
           style={{ flexGrow: 1, height: "100%" }}
           refreshControl={
@@ -109,7 +107,7 @@ function ListingsScreen({ route, navigation }) {
               />
             </ImageBackground>
           </View>
-          {/* <ScrollView> */}
+     
           {!searchQuery && (
             <>
               {getListingsApi.data && getListingsApi.data.length !== 0 && (

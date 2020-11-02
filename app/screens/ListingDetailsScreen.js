@@ -16,7 +16,7 @@ import ListItem from "../components/lists/ListItem";
 import Text from "../components/Text";
 import {
   TouchableOpacity,
-  
+  TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import useAuth from "../auth/useAuth";
 import Icon from "../components/Icon";

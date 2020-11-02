@@ -14,8 +14,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import routes from "../navigation/routes";
 import useAuth from "../auth/useAuth";
 
-import { SidebarData } from "../components/SidebarData";
-import ProfileImage from "../components/ProfileImage";
+import { SidebarData } from "./SidebarData";
+import ProfileImage from "./ProfileImage";
 import useApi from "../hooks/useApi";
 import usersApi from "../api/users";
 
