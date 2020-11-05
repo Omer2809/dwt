@@ -6,6 +6,7 @@ import MessageDetailScreen from "../screens/MessageDetailScreen";
 import MyListingsScreen from "../screens/MyListingsScreen";
 import ListingEditScreen from "../screens/ListingEditScreen";
 import ViewImageScreen from "../screens/ViewImageScreen";
+import FavoritesScreen from "../screens/FavoritesScreen";
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,7 @@ const AccountNavigator = () => (
     <Stack.Screen name="Account" component={AccountScreen} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
     <Stack.Screen name="MyListings" component={MyListingsScreen} />
+    <Stack.Screen name="Saved" component={FavoritesScreen} />
     <Stack.Screen name="MessageDetails" component={MessageDetailScreen} />
     <Stack.Screen name="ImageViewMessage" options={{ headerShown: false }} component={ViewImageScreen} />
   </Stack.Navigator>

@@ -6,6 +6,8 @@ const getListings = () => client.get(endpoint);
 
 const deleteListing = (id) => client.delete(`${endpoint}/${id}`);
 
+const getListing = (id) => client.get(`${endpoint}/${id}`);
+
 export const addListing = (listing, onUploadProgress) => {
   const data = new FormData();
   data.append("title", listing.title);
@@ -45,4 +47,5 @@ export default {
   addListing,
   getListings,
   deleteListing,
+  getListing
 };

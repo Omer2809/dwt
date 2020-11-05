@@ -27,6 +27,14 @@ const menuItems = [
     },
     targetScreen: routes.MESSAGES,
   },
+  {
+    title: "Saved",
+    icon: {
+      name: "bookmark",
+      backgroundColor: colors.saved,
+    },
+    targetScreen: routes.FAVORITES,
+  }
 ];
 
 function AccountScreen({ navigation }) {

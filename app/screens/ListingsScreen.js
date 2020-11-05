@@ -18,27 +18,27 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import colors from "../config/colors";
 import listingsApi from "../api/listings";
+
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/Text";
 import useApi from "../hooks/useApi";
 import SearchBox from "../components/searchBox";
-import getSearchData from "../components/getSearchData";
+import getSearchData from "../utility/getSearchData";
 import useAuth from "../auth/useAuth";
-
-function getData(items) {
-  return _.slice(items, 0, Math.min(10, items.length)).reverse();
-}
+import getTrendingData from "../utility/getTrendingData";
 
 function ListingsScreen({ route, navigation }) {
   const { user } = useAuth();
   const getListingsApi = useApi(listingsApi.getListings);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     getListingsApi.request();
     setRefreshing(false);
+    setCount(count + 1);
     const unsubscribe = navigation.addListener("focus", () => {
     });
     return unsubscribe;
@@ -107,7 +107,7 @@ function ListingsScreen({ route, navigation }) {
               />
             </ImageBackground>
           </View>
-     
+
           {!searchQuery && (
             <>
               {getListingsApi.data && getListingsApi.data.length !== 0 && (
@@ -120,7 +120,7 @@ function ListingsScreen({ route, navigation }) {
               <View>
                 <FlatList
                   horizontal
-                  data={getData(getListingsApi.data)}
+                  data={getTrendingData(getListingsApi.data)}
                   keyExtractor={(listing) => listing._id.toString()}
                   renderItem={({ item }) => {
                     return (
@@ -129,7 +129,7 @@ function ListingsScreen({ route, navigation }) {
                           onPress={() =>
                             navigation.navigate(routes.LISTING_DETAILS, {
                               listing: item,
-                              data: getData(getListingsApi.data),
+                              data: getTrendingData(getListingsApi.data),
                             })
                           }
                         >
@@ -193,10 +193,14 @@ function ListingsScreen({ route, navigation }) {
                       ? item.images[0].url
                       : "https://res.cloudinary.com/deqjuoahl/image/upload/v1602501994/dev_setups/iwhu97c1fezqwfwf0nfk.png"
                   }
+                  // onBookMark={handleBookMark}
+                  itemId={item._id}
+                  userId={user.userId}
+                  count={count}
                   onPress={() =>
                     navigation.navigate(routes.LISTING_DETAILS, {
                       listing: item,
-                      data: getData(getListingsApi.data),
+                      data: getTrendingData(getListingsApi.data),
                     })
                   }
                   thumbnailUrl={item.images[0] && item.images[0].thumbnailUrl}

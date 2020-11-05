@@ -89,10 +89,10 @@ function ListingDetailsScreen({ route, navigation }) {
           }
         />
       </View>
-      <View style={{ paddingHorizontal: 20 }}>
+      {/* <View style={{ paddingHorizontal: 20 }}>
         <ContactSellerForm listing={listing} btnName="Contact  Seller" />
-      </View>
-      {/* {user.userId !== listing.added_by._id ? (
+      </View> */}
+      {user.userId !== listing.added_by._id ? (
         <View style={{ paddingHorizontal: 20 }}>
           <ContactSellerForm listing={listing} btnName="Contact  Seller" />
         </View>
@@ -137,7 +137,7 @@ function ListingDetailsScreen({ route, navigation }) {
             }}
           />
         </View>
-      )} */}
+      )}
     </KeyboardAvoidingView>
   );
 }

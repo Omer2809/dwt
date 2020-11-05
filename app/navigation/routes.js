@@ -8,6 +8,7 @@ export default Object.freeze({
   TRENDING_LISTING_DETAILS: "ListingDetails",
   LISTING_EDIT: "ListingEdit",
   MY_LISTINGS:"MyListings",
+  FAVORITES:"Saved",
   MESSAGES: "Messages",
   MESSAGE_DETAILS: "MessageDetails",
   IMAGE_VIEW: "ImageView",

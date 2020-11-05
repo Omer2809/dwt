@@ -14,6 +14,7 @@ import listingsApi from "../api/listings";
 import routes from "../navigation/routes";
 import ListItemEditAction from "../components/lists/ListItemEditAction";
 import ActivityIndicator from "../components/ActivityIndicator";
+import getTrendingData from "../utility/getTrendingData";
 
 function MyListingsScreen({ navigation }) {
   const getMyListingsApi = useApi(myApi.getMyListings);
@@ -89,11 +90,7 @@ function MyListingsScreen({ navigation }) {
                   onPress={() =>
                     navigation.navigate(routes.LISTING_DETAILS, {
                       listing: item,
-                      data: _.slice(
-                        getListingsApi.data,
-                        0,
-                        Math.min(10, getListingsApi.data.length)
-                      ).reverse(),
+                      data:getTrendingData(getListingsApi.data)
                     })
                   }
                   thumbnailUrl={item.images[0] && item.images[0].thumbnailUrl}

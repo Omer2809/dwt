@@ -9,4 +9,5 @@ export default {
   danger: "#ff5252",
   edit: "#4ecdc4",
   profile: "#669966",
+  saved:"#D198C5FF"
 };

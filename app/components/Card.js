@@ -1,15 +1,69 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { Image } from "react-native-expo-image-cache";
 import { Feather } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import favoritesApi from "../api/favorites";
 
 import Text from "./Text";
 import colors from "../config/colors";
 
-function Card({ title, subTitle, imageUrl, onPress, thumbnailUrl }) {
+function getClasses(favorited) {
+  let classes = "bookmark";
+  if (!favorited) classes += "-outline";
+  return classes;
+}
+
+function Card({
+  itemId,
+  userId,
+  title,
+  subTitle,
+  imageUrl,
+  onPress,
+  thumbnailUrl,
+  count,
+}) {
+  const [favorited, setFavorited] = useState(false);
+
+  useEffect(() => {
+    checkfavorited(itemId, userId);
+  }, [count,itemId, userId]);
+
+  const checkfavorited = async (itemId, userId) => {
+    const result = await favoritesApi.checkFavorite(itemId, userId);
+    if (!result.ok) {
+      return alert("error occured");
+    }
+
+    if (result.data.length !== 0) {
+      setFavorited(true);
+    } else {
+      setFavorited(false);
+    }
+  };
+
+  const handleBookMark = async () => {
+    setFavorited(!favorited);
+
+    let result;
+    if (favorited) {
+      console.log("delte");
+      result = await favoritesApi.deleteParticularFavorite(itemId, userId);
+    } else {
+      console.log("add");
+      result = await favoritesApi.addFavorite(itemId, userId);
+    }
+
+    if (!result.ok) {
+      setFavorited(!favorited);
+      return alert("Could not save changes");
+    }
+  };
+
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <View style={styles.card}>
+    <View style={styles.card}>
+      <TouchableWithoutFeedback onPress={onPress}>
         <View>
           <Image
             style={styles.image}
@@ -26,16 +80,21 @@ function Card({ title, subTitle, imageUrl, onPress, thumbnailUrl }) {
           />
           <Text style={styles.ImageText}>{title}</Text>
         </View>
-        <View style={styles.detailsContainer}>
-          {/* <Text style={styles.title} numberOfLines={1}>
-            {title}
-          </Text> */}
-          <Text style={styles.subTitle} numberOfLines={2}>
-            {subTitle}
-          </Text>
-        </View>
+      </TouchableWithoutFeedback>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.subTitle} numberOfLines={2}>
+          {subTitle}
+        </Text>
+        <TouchableWithoutFeedback onPress={handleBookMark}>
+          <Icon
+            name={getClasses(favorited)}
+            size={30}
+            color="#444"
+            style={styles.bookmarkIcon}
+          />
+        </TouchableWithoutFeedback>
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
 }
 
@@ -47,7 +106,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflow: "hidden",
   },
+  bookmarkIcon: {},
   detailsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 20,
   },
   image: {
@@ -65,8 +129,6 @@ const styles = StyleSheet.create({
   ImageOverlay: {
     width: "100%",
     height: 200,
-    // marginRight: 8,
-    // borderRadius: 10,
     position: "absolute",
     backgroundColor: "#333",
     opacity: 0.2,
@@ -74,7 +136,7 @@ const styles = StyleSheet.create({
   imageLocationIcon: {
     position: "absolute",
     marginTop: 4,
-    paddingBottom:3,
+    paddingBottom: 3,
     left: 10,
     bottom: 10,
   },

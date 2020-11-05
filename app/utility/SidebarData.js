@@ -16,6 +16,11 @@ export const SidebarData = [
     icon: "format-list-bulleted",  
   },
   {
+    title: "Saved",
+    path: "FAVORITES",
+    icon: "bookmark-outline",  
+  },
+  {
     title: "Account",
     path: "ACCOUNT",
     icon: "account",  
