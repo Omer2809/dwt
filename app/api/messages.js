@@ -9,9 +9,18 @@ const send = (message, listingId, userId) =>
     userId,
   });
 
+const sendReply = (message, listingId, toId,fromId) =>
+  client.post(`${endpoint}/reply`, {
+    message,
+    listingId,
+    toId,
+    fromId,
+  });
+
 const deleteMessage = (id) => client.delete(`${endpoint}/${id}`);
 
 export default {
   send,
+  sendReply,
   deleteMessage
 };

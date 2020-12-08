@@ -43,9 +43,9 @@ function ListingDetailsScreen({ route, navigation }) {
         />
         <View style={styles.ImageOverlay}></View>
         <Text style={styles.ImageDescription}>
-          <Text style={styles.ImageText}>{listing.title}</Text>
+          <Text style={styles.ImageText} numberOfLines={4}>{listing.title}</Text>
           {`\n`}
-          {listing.description.substring(0, 180)}
+          {listing.description}
           ....
         </Text>
       </TouchableOpacity>
@@ -77,17 +77,31 @@ function ListingDetailsScreen({ route, navigation }) {
         />
       </View>
       <View style={{ paddingTop: 8 }}>
-        <ListItem
-          title={listing.added_by.name}
-          subTitle={`${listing.added_by.listingCount} Listings`}
-          imageUrl={
-            listing.added_by.images[0] && listing.added_by.images[0].url
-          }
-          thumbnailUrl={
-            listing.added_by.images[0] &&
-            listing.added_by.images[0].thumbnailUrl
-          }
-        />
+        {listing.added_by.images && listing.added_by.images.length !== 0 ? (
+          <ListItem
+            title={listing.added_by.name}
+            subTitle={`${listing.added_by.listingCount} Listings`}
+            imageUrl={
+              listing.added_by.images[0] && listing.added_by.images[0].url
+            }
+            thumbnailUrl={
+              listing.added_by.images[0] &&
+              listing.added_by.images[0].thumbnailUrl
+            }
+          />
+        ) : (
+          <ListItem
+            title={listing.added_by.name}
+            subTitle={`${listing.added_by.listingCount} Listings`}
+            IconComponent={
+              <Icon
+                name={"account-outline"}
+                size={60}
+                backgroundColor={colors.medium}
+              />
+            }
+          />
+        )}
       </View>
       {/* <View style={{ paddingHorizontal: 20 }}>
         <ContactSellerForm listing={listing} btnName="Contact  Seller" />

@@ -1,23 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
-import {
-  TouchableOpacity
-} from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "react-native-expo-image-cache";
+import usersApi from "../api/users";
+import myApi from "../api/my";
 
 import routes from "../navigation/routes";
 import colors from "../config/colors";
 import ContactSellerForm from "../components/ContactSellerForm";
 import Text from "../components/Text";
+import Icon from "../components/Icon";
+import useApi from "../hooks/useApi";
 
 function MessageDetailsScreen({ route, navigation }) {
   const message = route.params;
+  const { user } = useAuth();
+  const getUsersApi = useApi(usersApi.getUser);
+  const getChatsApi = useApi(myApi.getChat);
+
+  useEffect(() => {
+    getUsersApi.request(user.userId);
+    getChatsApi.request(message.fromUser._id, message.listing._id);
+  }, []);
 
   return (
     <KeyboardAvoidingView
       behavior="position"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 120}
-      keyboardVerticalOffset={100}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+      // keyboardVerticalOffset={100}
       style={{ flex: 1 }}
     >
       <TouchableOpacity
@@ -32,10 +42,12 @@ function MessageDetailsScreen({ route, navigation }) {
           uri={message.listing.images[0].url}
         />
         <View style={styles.ImageOverlay}></View>
-        <Text style={styles.ImageDescription}>
+        <Text style={styles.ImageDescription} numberOfLines={4}>
           <Text style={styles.ImageText}>{message.listing.title}</Text>
           {`\n`}
-          {message.listing.description.substring(0, 80)}...
+          {message.listing.description}... fshf sfjhsakjf hksjjafh sdkfjjh jfsh
+          a ksahf kjsfh ksfdj hhds safhjsdhfksjdaf hksjdfhsdk fksdjf sdjfhkd
+          kjsdfh sdkfjh ksjdfhd skkjsdf hjsdfh
         </Text>
       </TouchableOpacity>
       <View style={styles.ImagePrice}>
@@ -44,30 +56,142 @@ function MessageDetailsScreen({ route, navigation }) {
         </Text>
       </View>
       <View style={styles.userContainer}>
-        <Text
-          style={{
-            fontSize: 20,
-            marginVertical: 10,
-            fontWeight: "bold",
-          }}
-        >
-          Message from {message.fromUser.name}:
-        </Text>
-        <Text>" {`${message.content.substring(0, 150)}`} ..."</Text>
-        <ContactSellerForm listing={message.listing} btnName="Send Reply" />
+        <View style={{}}>
+          {getChatsApi.data.length != 0 && (
+            <>
+              <View style={[styles.displayflex]}>
+                {getUsersApi.data && getUsersApi.data.image ? (
+                  <Image
+                    style={styles.profile}
+                    tint="light"
+                    preview={{ uri: getUsersApi.data.images[0].thumbnailUrl }}
+                    uri={getUsersApi.data.images[0].url}
+                  />
+                ) : (
+                  <Icon
+                    name={"account-outline"}
+                    size={35}
+                    backgroundColor={colors.medium}
+                  />
+                )}
+                <Text
+                  style={{
+                    fontSize: 15,
+                    margin: 8,
+                    marginHorizontal: 5,
+                  }}
+                >
+                  {getUsersApi.data.name} :
+                </Text>
+              </View>
+              <Text
+                style={{
+                  backgroundColor: colors.light,
+                  marginLeft: 30,
+                  // paddingHorizontal: 10,
+                  padding: 12,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 15,
+                }}
+                numberOfLines={4}
+              >{console.log(getChatsApi.data)}
+                " {getChatsApi.data[0].content} ..."
+              </Text>
+            </>
+          )}
+          <View style={[styles.displayflex]}>
+            {message.fromUser.images && message.fromUser.images.length != 0 ? (
+              <Image
+                style={styles.profile}
+                tint="light"
+                preview={{ uri: message.fromUser.images[0].thumbnailUrl }}
+                uri={message.fromUser.images[0].url}
+              />
+            ) : (
+              <Icon
+                name={"account-outline"}
+                size={35}
+                backgroundColor={colors.medium}
+              />
+            )}
+            <Text
+              style={{
+                fontSize: 15,
+                margin: 5,
+                marginHorizontal: 5,
+              }}
+            >
+              {message.fromUser.name} :
+            </Text>
+          </View>
+          <Text
+            style={{
+              backgroundColor: colors.light,
+              marginLeft: 30,
+              // paddingHorizontal: 10,
+              // paddingTop: 10,
+              fontSize: 15,
+              padding: 12,
+              borderRadius: 20,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            numberOfLines={4}
+          >
+            " {message.content} ...  "
+          </Text>
+        </View>
+        <View style={[styles.displayflex]}>
+          {getUsersApi.data && getUsersApi.data.image ? (
+            <Image
+              style={styles.profile}
+              tint="light"
+              preview={{ uri: getUsersApi.data.images[0].thumbnailUrl }}
+              uri={getUsersApi.data.images[0].url}
+            />
+          ) : (
+            <Icon
+              name={"account-outline"}
+              size={35}
+              backgroundColor={colors.medium}
+            />
+          )}
+          <Text
+            style={{
+              fontSize: 15,
+              margin: 7,
+            }}
+          >
+            {getUsersApi.data.name} :
+          </Text>
+        </View>
+        <ContactSellerForm
+          listing={message.listing}
+          reply
+          toId={message.fromUser && message.fromUser._id}
+          btnName="Send Reply"
+        />
       </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  displayflex: {
+    display: "flex",
+    flexDirection: "row",
+    // alignItems: "center",
+    // justifyContent: "center",
+  },
   detailsContainer: {
     paddingHorizontal: 20,
     paddingTop: 8,
   },
   ImageOverlay: {
     width: "100%",
-    height: 270,
+    height: 250,
     position: "absolute",
     backgroundColor: "#333",
     borderBottomLeftRadius: 30,
@@ -88,7 +212,7 @@ const styles = StyleSheet.create({
     right: 20,
     // top: 50,
     // right: 135,
-    top: 250,
+    top: 225,
     zIndex: 50,
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -106,12 +230,20 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 270,
+    height: 250,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
   userContainer: {
-    marginHorizontal: 20,
+    margin: 20,
+  },
+  profile: {
+    width: 37,
+    height: 37,
+    borderRadius: 40,
+    borderWidth: 3,
+    // marginVertical: 0,
+    // borderColor: "#fff",
   },
 });
 

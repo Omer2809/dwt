@@ -7,17 +7,22 @@ import { Form, FormField, SubmitButton } from "./forms";
 import messagesApi from "../api/messages";
 import useAuth from "../auth/useAuth";
 
-function ContactSellerForm({ listing, btnName }) {
+function ContactSellerForm({ listing, btnName, reply, toId }) {
   const { user } = useAuth();
 
   const handleSubmit = async ({ message }, { resetForm }) => {
     Keyboard.dismiss();
 
-    const result = await messagesApi.send(message, listing._id, user.userId);
+    const result = reply
+      ? await messagesApi.sendReply(message, listing._id, toId, user.userId)
+      : await messagesApi.send(message, listing._id, user.userId);
 
     if (!result.ok) {
       console.log("Error", result);
-      return Alert.alert("Error", "Could not send the message something went wrong...");
+      return Alert.alert(
+        "Error",
+        "Could not send the message something went wrong..."
+      );
     }
 
     resetForm();

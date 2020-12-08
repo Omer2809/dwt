@@ -7,6 +7,7 @@ import ListingEditScreen from "../screens/ListingEditScreen";
 import MessagesScreen from "../screens/MessagesScreen";
 import MyListingsScreen from "../screens/MyListingsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
+import MessageDetailsScreen from "../screens/MessageDetailScreen";
 // import Home from "../components/home";
 
 const Stack = createStackNavigator();
@@ -33,6 +34,7 @@ const FeedNavigator = () => (
       component={MessagesScreen}
       options={{ headerShown: true }}
     />
+    <Stack.Screen name="MessageDetails" component={MessageDetailsScreen} />
   </Stack.Navigator>
 );
 
